@@ -127,6 +127,65 @@ body {
   padding-bottom: 4px;
 }
 
+/* ---------- Starter pitches (blank-page fix) ---------- */
+
+.starter-block {
+  margin: 0 0 20px;
+  padding: 14px 14px 12px;
+  background: rgba(255, 252, 240, 0.45);
+  border: 1px dashed var(--rule);
+  border-radius: 2px;
+}
+
+.starter-label {
+  font-size: 10px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  margin: 0 0 10px;
+}
+
+.starters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 0 0 10px;
+}
+
+.starter-chip {
+  background: var(--paper);
+  color: var(--ink-soft);
+  border: 1px solid var(--rule);
+  padding: 7px 11px;
+  font-family: 'Special Elite', 'Courier New', monospace;
+  font-size: 12px;
+  letter-spacing: 0.3px;
+  cursor: pointer;
+  min-height: 34px;
+  border-radius: 2px;
+  box-shadow: 0 1px 0 rgba(0,0,0,0.04);
+  transition: background 0.08s ease, color 0.08s ease, border-color 0.08s ease;
+}
+.starter-chip:hover {
+  background: var(--ink);
+  color: var(--paper);
+  border-color: var(--ink);
+}
+.starter-chip.picked {
+  background: var(--ink);
+  color: var(--paper);
+  border-color: var(--ink);
+}
+
+.surprise-btn {
+  display: inline-block;
+  margin-top: 2px;
+  font-size: 11px;
+  letter-spacing: 1.2px;
+  padding: 8px 14px;
+  min-height: 36px;
+}
+
 #pitch {
   width: 100%;
   background: rgba(255, 252, 240, 0.55);

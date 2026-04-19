@@ -119,6 +119,84 @@ const SALUTATIONS = [
   'Re: your pitch (forwarded by an assistant).'
 ];
 
+// Starter pitches — the fix for "idk what to write". These are concrete,
+// absurd, and pre-baked. User picks one, can send as-is or edit. Each one
+// shows the user what "a pitch" looks like without forcing them to invent.
+const STARTERS = [
+  {
+    label: 'Squirrel feud memoir',
+    text: 'A 280-page memoir about my decade-long feud with the squirrels who live in my mother-in-law\'s attic, including the color-coded spreadsheet where I rank them by malice and the three I\'ve given names to.'
+  },
+  {
+    label: 'Gas station coffee',
+    text: 'A field guide to gas station coffee at exits 12-47 on I-90 west. I have been rating them on a 14-point rubric since 2019. There is a villain (exit 31) and a quiet hero (exit 22, unmarked pot).'
+  },
+  {
+    label: 'Elevator small talk',
+    text: 'A taxonomy of elevator small talk in my 47-story office building, compiled from 600 rides. Includes the six recurring archetypes, the two lines that always work, and the one floor where nobody ever speaks.'
+  },
+  {
+    label: 'Grocery list archive',
+    text: 'I have kept every grocery list I\'ve written since 2011. Four hundred and twelve lists. A book about what they add up to — a slow, accidental portrait of a life in onions, regret, and paper towels.'
+  },
+  {
+    label: 'Vending machine',
+    text: 'Close reading of the vending machine on the third floor of my office: its patterns, its betrayals, the one slot (B4) that has held the same pack of peanut butter crackers since 2022.'
+  },
+  {
+    label: 'Neighbor cats',
+    text: 'A year-long observational study of the 11 cats on my block, told through the lens of their rivalries, their routes, and one slow-moving turf war over a single sunny porch on Elm Street.'
+  },
+  {
+    label: 'Laundromat regulars',
+    text: 'Portraits of the six regulars at the 24-hour laundromat on Oak Ave, including the man who only comes at 3am and the woman who folds her sheets like she is making an apology to someone.'
+  },
+  {
+    label: 'DMV dispatch',
+    text: 'Field dispatches from 46 visits to the DMV over three years, including the unspoken seating hierarchy, the two employees everyone is quietly in love with, and a theory about the ficus.'
+  },
+  {
+    label: 'Library book smell',
+    text: 'An essay collection on the smell of specific library books, cross-referenced by decade and binding glue, with a long chapter on the 1978 Funk & Wagnalls that ruined an entire summer for me.'
+  },
+  {
+    label: 'Thermostat war',
+    text: 'A marriage told through the thermostat: 14 years, 68 degrees, 47 undocumented adjustments, and the notebook I started keeping in 2021 without telling him.'
+  },
+  {
+    label: 'Bodega cats',
+    text: 'A census of every bodega cat in a 14-block radius of my apartment, their names (real and assigned), their politics, and the one cat (Mister, on 84th) who I believe is running something.'
+  },
+  {
+    label: 'Wrong number texts',
+    text: 'Every wrong number text I\'ve received in the last six years, organized by vibe, with a long chapter on "Brenda," who texted me seven times in 2022 to coordinate a funeral I had no part in.'
+  },
+  {
+    label: 'Office coffee maker',
+    text: 'A 200-page biography of the Mr. Coffee on the 4th floor of my office: its three previous stewards, the Great Spill of 2019, and the unspoken rule about who is allowed to change the filter.'
+  },
+  {
+    label: 'Parking lot rules',
+    text: 'The unwritten rules of my apartment complex\'s parking lot, in a 12-chapter treatise, including the lore of space 14 (cursed), the pickup truck that has not moved since October, and the quiet mayor.'
+  },
+  {
+    label: 'Cereal box shrinkage',
+    text: 'A forensic accounting of cereal box shrinkage, 2008-present, with photos, grams, and a chapter on the box that got so small it now fits in the silverware drawer, for sociological reasons.'
+  },
+  {
+    label: 'Hold music',
+    text: 'A listener\'s guide to corporate hold music. 200+ hours logged. There are recurring motifs, a handful of genuine compositions, and one insurance company whose hold music I think about at night.'
+  },
+  {
+    label: 'Receipt archive',
+    text: 'Fifteen years of receipts, taped into notebooks, annotated. A memoir told sideways — through gas, gum, and the one CVS trip in 2016 where everything changed and nothing was itemized.'
+  },
+  {
+    label: 'Airport chairs',
+    text: 'A 14-airport survey of the chairs in Terminal B, ranked by comfort, proximity to outlets, and the strange mood they impart at 4am. Includes two chairs I consider friends.'
+  }
+];
+
 // -------------------- Helpers --------------------
 
 function hash(str) {
@@ -220,10 +298,13 @@ document.addEventListener('DOMContentLoaded', () => {
   els.stamp     = document.getElementById('stamp');
   els.share     = document.getElementById('share');
   els.restart   = document.getElementById('restart');
+  els.starters  = document.getElementById('starters');
+  els.surprise  = document.getElementById('surprise');
 
   els.pitch.addEventListener('input', updateCounter);
   els.submit.addEventListener('click', onSubmit);
   els.restart.addEventListener('click', onRestart);
+  els.surprise.addEventListener('click', onSurprise);
   // cmd/ctrl+enter to submit
   els.pitch.addEventListener('keydown', (e) => {
     if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') {
@@ -232,8 +313,46 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
+  renderStarters();
   updateCounter();
 });
+
+// -------------------- Starter pitches (blank-page fix) --------------------
+
+function renderStarters() {
+  // Show a rotating subset of starters so the UI stays tight. Different each load.
+  const shuffled = STARTERS.slice().sort(() => Math.random() - 0.5);
+  const shown = shuffled.slice(0, 8);
+  els.starters.innerHTML = '';
+  shown.forEach((s) => {
+    const chip = document.createElement('button');
+    chip.type = 'button';
+    chip.className = 'starter-chip';
+    chip.textContent = s.label;
+    chip.addEventListener('click', () => {
+      els.pitch.value = s.text;
+      updateCounter();
+      els.error.hidden = true;
+      // brief visual selection
+      Array.from(els.starters.children).forEach((c) => c.classList.remove('picked'));
+      chip.classList.add('picked');
+      // scroll textarea into view so they see what got filled in
+      els.pitch.focus();
+      els.pitch.setSelectionRange(els.pitch.value.length, els.pitch.value.length);
+    });
+    els.starters.appendChild(chip);
+  });
+}
+
+function onSurprise() {
+  const s = STARTERS[Math.floor(Math.random() * STARTERS.length)];
+  els.pitch.value = s.text;
+  updateCounter();
+  els.error.hidden = true;
+  Array.from(els.starters.children).forEach((c) => c.classList.remove('picked'));
+  els.pitch.focus();
+  els.pitch.setSelectionRange(els.pitch.value.length, els.pitch.value.length);
+}
 
 function updateCounter() {
   const n = els.pitch.value.length;
@@ -253,7 +372,7 @@ async function onSubmit() {
   els.error.hidden = true;
 
   if (pitch.length < 20) {
-    els.error.textContent = 'the editor needs more than that. give the desk a real paragraph.';
+    els.error.textContent = 'the editor needs more than that. try a starter pitch above, or write a few sentences.';
     els.error.hidden = false;
     return;
   }

@@ -30,17 +30,23 @@
     <!-- INTRO / INPUT -->
     <section id="intro" class="screen">
       <p class="lede">
-        Pitch your weirdest niche interest in a paragraph. The desk will reply with a
+        Pick a weird obsession below (or write your own) and the desk will reply with a
         four-line acquisition or rejection &mdash; absurd advance, comp title, signed
         in fountain pen.
       </p>
 
-      <label for="pitch" class="pitch-label">Your one-paragraph pitch</label>
+      <div class="starter-block">
+        <div class="starter-label">Pick a pitch to start with</div>
+        <div id="starters" class="starters"></div>
+        <button id="surprise" class="ghost-button surprise-btn" type="button">Surprise me</button>
+      </div>
+
+      <label for="pitch" class="pitch-label">Your pitch (edit freely)</label>
       <textarea
         id="pitch"
         rows="6"
         maxlength="900"
-        placeholder="e.g. A 280-page memoir about my decade-long feud with the squirrels who live in my mother-in-law's attic and the spreadsheet I keep ranking them..."
+        placeholder="Click a starter above, or write your own: a weird hobby, a petty grudge, a niche habit you've been keeping notes on..."
         spellcheck="true"></textarea>
       <div class="row-bottom">
         <span id="counter" class="counter">0 / 900</span>
